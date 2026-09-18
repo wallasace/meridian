@@ -49,7 +49,10 @@ def main():
     # Copy the main script
     print("Copying application files...")
     shutil.copy(project_dir / "world_clock.py", macos_dir / "world_clock")
-    shutil.copy(project_dir / "assets", resources_dir, dirs_exist_ok=True)
+    assets_dest = resources_dir / "assets"
+    if assets_dest.exists():
+        shutil.rmtree(assets_dest)
+    shutil.copytree(project_dir / "assets", assets_dest)
 
     # Create a launcher script
     launcher_path = macos_dir / "World Clock"

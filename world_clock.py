@@ -4,6 +4,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
+from typing import Optional
 
 from PySide6.QtCore import QEvent, QObject, Qt, QTimer, QSettings, Signal
 from PySide6.QtGui import QFont, QFontDatabase, QColor, QCursor, QPainter, QPainterPath, QPen, QPixmap
@@ -37,7 +38,7 @@ FLAGS_DIR = Path(__file__).resolve().parent / "assets" / "flags"
 _flag_pixmap_cache: dict[tuple[str, int], QPixmap] = {}
 
 
-def flag_pixmap(country_code: str, height: int) -> QPixmap | None:
+def flag_pixmap(country_code: str, height: int) -> Optional[QPixmap]:
     """A rounded-corner flag pixmap for `country_code` at the given pixel
     height (4:3 aspect ratio), or None if no asset exists for that code."""
     key = (country_code.lower(), height)
