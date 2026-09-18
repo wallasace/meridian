@@ -87,6 +87,14 @@ html.native :is(.top,.bot){cursor:grab}
 html.native :is(.top,.bot):active{cursor:grabbing}
 html.native :is(.top,.bot) :is(button,input,a){cursor:pointer}
 
+/* Windows: the window frame cannot be see-through, so the gap around the card
+   would show as a solid border. The card fills the window instead, and the
+   frame itself supplies the rounded corners. */
+html.win body{padding:0;align-items:stretch}
+html.win #mc{max-width:none;border:0;box-shadow:none;min-height:100vh;
+display:flex;flex-direction:column}
+html.win .panels{flex:1}   /* panels take the slack, so the footer sits at the bottom */
+
 .panels{display:grid;grid-template-columns:1fr 1fr;position:relative}
 .panel{min-width:0;position:relative;overflow:hidden;padding:22px 25px 20px;min-height:278px;isolation:isolate}
 .panel+.panel{border-left:1px solid var(--hair2)}

@@ -72,7 +72,12 @@ sealed class MeridianForm : Form
         core.Settings.AreDevToolsEnabled = false;
 
         await core.AddScriptToExecuteOnDocumentCreatedAsync(
-            "window.MERIDIAN_NATIVE=true;document.documentElement.classList.add('native');" +
+            "window.MERIDIAN_NATIVE=true;" +
+            // This runs before the document exists, so tagging <html> has to
+            // wait for it — otherwise the window controls never appear.
+            "(function(){var f=function(){document.documentElement.classList.add('native','win')};" +
+            "if(document.documentElement){f()}" +
+            "document.addEventListener('DOMContentLoaded',f);})();" +
             // WebView2 exposes one generic channel; adapt it to the same
             // webkit.messageHandlers shape the page already speaks.
             "window.webkit={messageHandlers:new Proxy({},{get:(_,name)=>({" +
