@@ -1,17 +1,16 @@
+# Build output
+Meridian.app/
+desktop/windows/dist/
+desktop/windows/bin/
+desktop/windows/obj/
+desktop/macos/Meridian.app/
+*.zip
+*.tar.gz
+
+# Runtime
+userdata/
 __pycache__/
 *.pyc
-.venv/
-venv/
-*.egg-info/
 
-# macOS
+# OS
 .DS_Store
-.AppleDouble
-.LSOverride
-*.app/
-*.dmg
-
-# Build artifacts
-build/
-dist/
-*.egg-info/

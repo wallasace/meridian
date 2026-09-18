@@ -1,0 +1,144 @@
+name: Release
+
+# Push a tag and GitHub builds all three desktop apps, then publishes them:
+#     git tag v1.0.0 && git push origin v1.0.0
+# "Run workflow" on the Actions tab also works, for a dry run without a tag.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    name: macOS app
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Meridian.app
+        run: |
+          chmod +x desktop/macos/build.sh
+          ./desktop/macos/build.sh "$PWD/Meridian.app"
+
+      - name: Verify the bundle
+        run: |
+          test -f "Meridian.app/Contents/MacOS/Meridian" || { echo "binary missing"; exit 1; }
+          test -f "Meridian.app/Contents/Resources/index.html" || { echo "page missing"; exit 1; }
+          echo "size: $(du -sh Meridian.app | cut -f1)"
+
+      # Zip rather than upload the bundle raw: a .app is a folder, and the
+      # executable bit inside it must survive the download.
+      - name: Package
+        run: ditto -c -k --keepParent Meridian.app Meridian-macOS.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Meridian-macOS
+          path: Meridian-macOS.zip
+
+  windows:
+    name: Windows app
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build Meridian.exe
+        shell: pwsh
+        run: dotnet publish desktop/windows/Meridian.csproj -c Release -o dist
+
+      - name: Verify the executable
+        shell: pwsh
+        run: |
+          if (-not (Test-Path dist/Meridian.exe)) { throw "Meridian.exe missing" }
+          if (-not (Test-Path dist/index.html))   { throw "index.html missing" }
+          "size: {0:N1} MB" -f ((Get-Item dist/Meridian.exe).Length / 1MB)
+
+      - name: Package
+        shell: pwsh
+        run: |
+          Get-ChildItem dist -Include *.pdb,*.xml -Recurse | Remove-Item -Force -EA SilentlyContinue
+          Compress-Archive -Path dist/* -DestinationPath Meridian-Windows.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Meridian-Windows
+          path: Meridian-Windows.zip
+
+  linux:
+    name: Linux app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GTK and WebKitGTK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1
+
+      # No compile step here, so the check that matters is that the bindings
+      # actually import on a clean machine.
+      - name: Verify it loads
+        run: |
+          python3 -m py_compile desktop/linux/meridian.py
+          python3 - <<'PY'
+          import gi
+          gi.require_version("Gtk", "3.0")
+          try:
+              gi.require_version("WebKit2", "4.1")
+          except ValueError:
+              gi.require_version("WebKit2", "4.0")
+          from gi.repository import Gtk, WebKit2
+          print("GTK and WebKitGTK import cleanly")
+          PY
+
+      - name: Package
+        run: |
+          mkdir -p pkg/meridian
+          cp index.html desktop/linux/meridian.py desktop/linux/install.sh pkg/meridian/
+          cp icons/icon-512.png pkg/meridian/meridian.png
+          chmod +x pkg/meridian/install.sh pkg/meridian/meridian.py
+          tar -czf Meridian-Linux.tar.gz -C pkg meridian
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Meridian-Linux
+          path: Meridian-Linux.tar.gz
+
+  publish:
+    name: Publish release
+    needs: [macos, windows, linux]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Meridian-macOS.zip
+            Meridian-Windows.zip
+            Meridian-Linux.tar.gz
+          generate_release_notes: true
+          body: |
+            Download for your system below. No installer, no dependencies.
+
+            | System | File | First launch |
+            |---|---|---|
+            | macOS | `Meridian-macOS.zip` | Right-click the app → **Open** (once) |
+            | Windows | `Meridian-Windows.zip` | **More info** → **Run anyway** (once) |
+            | Linux | `Meridian-Linux.tar.gz` | `./install.sh` |
+
+            That extra click on macOS and Windows is the unsigned-app warning —
+            code signing certificates are paid, and this project has none.
+
+            Prefer nothing to download? Open it in the browser and install from
+            there instead: https://wallasace.github.io/meridian/

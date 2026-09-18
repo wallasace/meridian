@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101722">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Meridian</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;
+--page:#eef1f6;--ink:#182536;--muted:#526075;--surface:#f7f9fc;
+--edge:#dce3eb;--sh1:rgba(27,48,67,.28);--sh2:rgba(27,48,67,.10);--sh3:#ffffff;
+--hair:rgba(20,40,64,.09);--hair2:rgba(20,40,64,.13);
+--v1:rgba(247,249,252,.91);--v2:rgba(247,249,252,.40);--v3:rgba(247,249,252,.77);--v4:rgba(247,249,252,.97);
+--pickb:rgba(255,255,255,.40);--pickbg:rgba(247,249,252,.75);--pickbgh:rgba(255,255,255,.85);
+--chip:#dfe6ef;--botsh:rgba(48,64,90,.03);--timesh:rgba(255,255,255,.69);
+--btn:#ffffff;--btnb:#cad4e2;--scrim:rgba(10,15,23,.33);
+--pop:#ffffff;--popb:#dce3eb;--popline:#e6ebf2;--opth:#eff3f9;--optsel:#e3ecfa;
+--hoverbg:rgba(20,40,64,.07);--hoverbd:rgba(20,40,64,.13);--activebg:rgba(20,40,64,.13);
+--focus:#3b82d6;--accent:#4b7fc4;--bybd:rgba(24,37,54,.28)}
+
+@media(prefers-color-scheme:dark){:root{
+--page:#0a0f17;--ink:#f5f7fb;--muted:#b7c3d4;--surface:#101722;
+--edge:rgba(255,255,255,.08);--sh1:rgba(0,0,0,.67);--sh2:rgba(0,0,0,.27);--sh3:rgba(255,255,255,.07);
+--hair:rgba(255,255,255,.09);--hair2:rgba(255,255,255,.13);
+--v1:rgba(16,23,34,.91);--v2:rgba(16,23,34,.40);--v3:rgba(16,23,34,.77);--v4:rgba(16,23,34,.97);
+--pickb:rgba(255,255,255,.08);--pickbg:rgba(16,23,34,.66);--pickbgh:rgba(22,32,48,.60);
+--chip:rgba(255,255,255,.05);--botsh:rgba(0,0,0,.07);--timesh:rgba(0,0,0,.56);
+--btn:#202c3d;--btnb:#334359;--scrim:rgba(0,0,0,.53);
+--pop:#161f2d;--popb:rgba(255,255,255,.09);--popline:rgba(255,255,255,.07);
+--opth:rgba(255,255,255,.06);--optsel:#2a3d57;
+--hoverbg:rgba(255,255,255,.10);--hoverbd:rgba(255,255,255,.16);--activebg:rgba(255,255,255,.17);
+--focus:#6aa9e9;--accent:#7fb0ea;--bybd:rgba(245,247,251,.3)}}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--page);display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;padding:12px 8px;font-family:'DM Sans',system-ui,-apple-system,sans-serif}
+
+#mc{width:100%;max-width:736px;color:var(--ink);background:var(--surface);border-radius:12px;overflow:hidden;isolation:isolate;position:relative;
+border:1px solid var(--edge);
+box-shadow:0 18px 44px -16px var(--sh1),0 3px 8px var(--sh2),inset 0 1px 0 var(--sh3)}
+
+.top{padding:17px 25px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--hair);background:var(--surface)}
+.brandwrap{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto;overflow:hidden}
+.brand{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.7px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand svg{width:14px;height:14px;opacity:.75;flex:none}
+.by{padding-left:22px;font-size:9px;letter-spacing:.6px;color:var(--muted);opacity:.75;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.by a{color:var(--ink);opacity:.78;text-decoration:none;
+border-bottom:1px solid var(--bybd);padding-bottom:1px;transition:color .15s,opacity .15s,border-color .15s}
+.by a:hover{color:var(--accent);opacity:1;border-bottom-color:var(--accent)}
+.by a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:2px}
+.tr{display:flex;align-items:center;gap:14px;min-width:0;flex:0 0 auto}
+.live{display:flex;gap:7px;align-items:center;font-size:10px;letter-spacing:1.4px;color:var(--muted);white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:50%;background:#4bc89a;box-shadow:0 0 12px #4bc89a70;flex:none}
+
+/* window controls: only exist inside the native app */
+.wctl{display:none}
+html.native .wctl{display:flex;gap:4px}
+.wbtn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;padding:0;
+border:1px solid transparent;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;
+font:400 15px/1 'DM Sans',sans-serif;-webkit-appearance:none;appearance:none;-webkit-user-select:none;user-select:none;
+transition:background .13s,color .13s,border-color .13s,transform .13s}
+.wbtn:hover{background:var(--hoverbg);border-color:var(--hoverbd);color:var(--ink)}
+.wbtn:active{transform:scale(.92);background:var(--activebg)}
+.wbtn[data-act=close]:hover{background:#e5484d;border-color:#e5484d;color:#fff}
+.wbtn[data-act=close]:active{background:#c93a3e;border-color:#c93a3e}
+.wbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pin svg{width:14px;height:14px;display:block;transition:transform .15s}
+.pin[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.pin[aria-pressed=true] svg{transform:rotate(-35deg)}
+.pin[aria-pressed=true]:hover{background:var(--accent);border-color:var(--accent);
+  filter:brightness(1.12);color:#fff}
+
+/* no system chrome: the card's shadow needs room to show */
+html.native,html.native body{background:transparent}
+html.native body{padding:16px 18px 24px;align-items:stretch}
+html.native #mc{max-width:none;margin:auto}
+html.native :is(.top,.bot){cursor:grab}
+html.native :is(.top,.bot):active{cursor:grabbing}
+html.native :is(.top,.bot) :is(button,input,a){cursor:pointer}
+
+.panels{display:grid;grid-template-columns:1fr 1fr;position:relative}
+.panel{min-width:0;position:relative;overflow:hidden;padding:22px 25px 20px;min-height:278px;isolation:isolate}
+.panel+.panel{border-left:1px solid var(--hair2)}
+canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.veil{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--v1) 0%,var(--v2) 32%,var(--v3) 64%,var(--v4) 100%)}
+.cap{font-size:9px;letter-spacing:2.2px;font-weight:600;margin-bottom:8px;color:var(--muted)}
+.cap,.city,.date,.zone{text-shadow:0 1px 8px var(--surface),0 0 3px var(--surface)}
+
+.pick{font-family:'Manrope',sans-serif;font-size:20px;font-weight:600;padding:6px 26px 6px 10px;margin-left:-10px;max-width:100%;
+color:var(--ink);border:1px solid var(--pickb);border-radius:7px;background:var(--pickbg);
+box-shadow:0 3px 10px rgba(0,0,0,.07);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;width:100%;position:relative;-webkit-appearance:none;appearance:none;
+transition:background .15s,border-color .15s,box-shadow .15s,transform .15s}
+.pick:after{content:'';position:absolute;right:10px;width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:border-color .15s}
+.pick:hover{background:var(--pickbgh);border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.14)}
+.pick:hover:after{border-color:var(--accent)}
+.pick:active{transform:scale(.995);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.pick:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pick b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.city{font-size:11px;margin-top:8px;color:var(--muted)}
+.time{font-family:'Manrope',sans-serif;font-size:clamp(46px,9vw,70px);font-weight:500;letter-spacing:-4px;margin-top:39px;line-height:1.1;
+white-space:nowrap;text-shadow:0 2px 18px var(--timesh),0 0 6px var(--timesh);font-variant-numeric:tabular-nums}
+.secs{font-family:'DM Sans',sans-serif;font-size:14px;letter-spacing:0;margin-left:9px;color:var(--muted);font-variant-numeric:tabular-nums}
+.date{font-size:11px;margin-top:8px;color:var(--muted)}
+.zone{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:10px;color:var(--muted);margin-top:19px}
+.off{padding:4px 7px;border-radius:4px;background:var(--chip);letter-spacing:.5px}
+
+.bot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 25px;
+border-top:1px solid var(--hair);background:var(--surface);box-shadow:0 -8px 24px var(--botsh)}
+.diff{min-width:0;font-size:11px;color:var(--muted);line-height:1.6}
+.diff strong{color:var(--ink);font-weight:600}
+.wind{font-family:'DM Sans',sans-serif;font-size:11px;padding:8px 12px;border-radius:6px;white-space:nowrap;cursor:pointer;
+color:var(--ink);background:var(--btn);border:1px solid var(--btnb);-webkit-appearance:none;appearance:none;
+box-shadow:0 2px 4px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.04);
+transition:background .16s,transform .16s,box-shadow .16s,border-color .16s}
+.wind:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:0 5px 14px rgba(0,0,0,.18)}
+.wind:active{transform:translateY(0);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.wind:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* destination picker */
+.sheet{position:fixed;inset:0;z-index:99;display:none;background:var(--scrim);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+align-items:center;justify-content:center;padding:16px}
+.sheet[open]{display:flex}
+.box{width:100%;max-width:420px;max-height:min(70vh,560px);display:flex;flex-direction:column;overflow:hidden;
+background:var(--pop);border:1px solid var(--popb);border-radius:12px;box-shadow:0 24px 60px -12px rgba(0,0,0,.44)}
+.box input{font:500 15px 'DM Sans',sans-serif;width:100%;padding:14px 16px;border:0;border-bottom:1px solid var(--popline);
+background:transparent;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none}
+.box input::placeholder{color:var(--muted)}
+.list{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:8px;background:transparent;
+color:var(--ink);font:500 14px 'DM Sans',sans-serif;cursor:pointer;text-align:left;-webkit-appearance:none;appearance:none}
+.opt:hover,.opt.on{background:var(--hoverbg)}
+.opt:active{background:var(--activebg)}
+.opt[aria-selected=true]{background:var(--optsel);box-shadow:inset 2px 0 0 var(--accent)}
+.opt span{color:var(--muted);font-size:11px;margin-left:auto;white-space:nowrap}
+.empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:13px}
+
+@media(max-width:560px){
+.panels{grid-template-columns:1fr}
+.panel+.panel{border-left:0;border-top:1px solid var(--hair2)}
+.top{padding:16px}.brand{font-size:11px;letter-spacing:1.5px}.live{font-size:8px;letter-spacing:.6px}
+.panel{padding:20px 15px 18px;min-height:230px}
+.cap{font-size:8px;letter-spacing:1px}.pick{font-size:16px}
+.time{font-size:43px;letter-spacing:-2.7px;margin-top:30px}.secs{display:none}
+.zone{gap:5px;font-size:9px}.bot{padding:12px 15px;gap:10px}
+.diff{font-size:10px}.by{font-size:8.5px;padding-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+.wind,.pick,.wbtn,.pick:after{transition:none}
+.wind:hover,.pick:active,.wbtn:active,.wind:active{transform:none}}
+</style>
+</head>
+<body>
+<div id="mc">
+  <header class="top">
+    <div class="brandwrap">
+      <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>MERIDIAN</div>
+      <div class="by">by <a href="https://github.com/wallasace" target="_blank" rel="noopener">wallasace</a> · open source</div>
+    </div>
+    <div class="tr">
+      <span class="live"><span class="dot"></span>WORLD CLOCK · LIVE</span>
+      <div class="wctl">
+        <button class="wbtn pin" data-act="pin" aria-pressed="false" aria-label="Keep on top" title="Keep on top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 17v5"/><path d="M9 10.8a2 2 0 0 1-1.1 1.8l-1.8.9A2 2 0 0 0 5 15.2V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.8a2 2 0 0 0-1.1-1.8l-1.8-.9A2 2 0 0 1 15 10.8V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>
+          </svg>
+        </button>
+        <button class="wbtn" data-act="minimize" aria-label="Minimize" title="Minimize (⌘M)">&#8211;</button>
+        <button class="wbtn" data-act="close" aria-label="Close" title="Close (⌘W)">&#215;</button>
+      </div>
+    </div>
+  </header>
+  <div class="panels">
+    <section class="panel"><canvas aria-hidden="true"></canvas><div class="veil"></div>
+      <div class="cap">FIRST DESTINATION</div>
+      <button class="pick" type="button" aria-haspopup="dialog"><b></b></button>
+      <div class="city"></div>
+      <div class="time"><span class="hm">--:--</span><span class="secs">00</span></div>
+      <div class="date"></div>
+      <div class="zone"><span class="off"></span><span class="per"></span></div>
+    </section>
+    <section class="panel"><canvas aria-hidden="true"></canvas><div class="veil"></div>
+      <div class="cap">ON THE OTHER SIDE</div>
+      <button class="pick" type="button" aria-haspopup="dialog"><b></b></button>
+      <div class="city"></div>
+      <div class="time"><span class="hm">--:--</span><span class="secs">00</span></div>
+      <div class="date"></div>
+      <div class="zone"><span class="off"></span><span class="per"></span></div>
+    </section>
+  </div>
+  <footer class="bot">
+    <div class="diff" aria-live="polite"></div>
+    <button class="wind" type="button" aria-pressed="false">Pause wind</button>
+  </footer>
+</div>
+
+<div class="sheet" role="dialog" aria-modal="true" aria-label="Choose destination">
+  <div class="box">
+    <input type="search" placeholder="Search country or city…" aria-label="Search country or city" autocomplete="off">
+    <div class="list" role="listbox"></div>
+  </div>
+</div>
+
+<script>
+/* Catalog: ISO 3166-1 alpha-2 + IANA tzdb. Countries spanning several zones list each city. */
+const C=[
+["Afghanistan","af",["Kabul","Asia/Kabul"]],["South Africa","za",["Johannesburg","Africa/Johannesburg"]],
+["Albania","al",["Tirana","Europe/Tirane"]],["Germany","de",["Berlin","Europe/Berlin"]],
+["Andorra","ad",["Andorra la Vella","Europe/Andorra"]],["Angola","ao",["Luanda","Africa/Luanda"]],
+["Saudi Arabia","sa",["Riyadh","Asia/Riyadh"]],["Algeria","dz",["Algiers","Africa/Algiers"]],
+["Argentina","ar",["Buenos Aires","America/Argentina/Buenos_Aires"]],["Armenia","am",["Yerevan","Asia/Yerevan"]],
+["Australia","au",["Sydney","Australia/Sydney"],["Melbourne","Australia/Melbourne"],["Brisbane","Australia/Brisbane"],["Adelaide","Australia/Adelaide"],["Perth","Australia/Perth"],["Darwin","Australia/Darwin"]],
+["Austria","at",["Vienna","Europe/Vienna"]],["Azerbaijan","az",["Baku","Asia/Baku"]],
+["Bahamas","bs",["Nassau","America/Nassau"]],["Bangladesh","bd",["Dhaka","Asia/Dhaka"]],
+["Barbados","bb",["Bridgetown","America/Barbados"]],["Bahrain","bh",["Manama","Asia/Bahrain"]],
+["Belgium","be",["Brussels","Europe/Brussels"]],["Belize","bz",["Belmopan","America/Belize"]],
+["Benin","bj",["Porto-Novo","Africa/Porto-Novo"]],["Belarus","by",["Minsk","Europe/Minsk"]],
+["Bolivia","bo",["La Paz","America/La_Paz"]],["Bosnia and Herzegovina","ba",["Sarajevo","Europe/Sarajevo"]],
+["Botswana","bw",["Gaborone","Africa/Gaborone"]],
+["Brazil","br",["Brasilia","America/Sao_Paulo"],["Manaus","America/Manaus"],["Cuiaba","America/Cuiaba"],["Belem","America/Belem"],["Fortaleza","America/Fortaleza"],["Recife","America/Recife"],["Rio Branco","America/Rio_Branco"],["Fernando de Noronha","America/Noronha"]],
+["Brunei","bn",["Bandar Seri Begawan","Asia/Brunei"]],["Bulgaria","bg",["Sofia","Europe/Sofia"]],
+["Burkina Faso","bf",["Ouagadougou","Africa/Ouagadougou"]],["Burundi","bi",["Gitega","Africa/Bujumbura"]],
+["Bhutan","bt",["Thimphu","Asia/Thimphu"]],["Cape Verde","cv",["Praia","Atlantic/Cape_Verde"]],
+["Cameroon","cm",["Yaounde","Africa/Douala"]],["Cambodia","kh",["Phnom Penh","Asia/Phnom_Penh"]],
+["Canada","ca",["Toronto","America/Toronto"],["Vancouver","America/Vancouver"],["Winnipeg","America/Winnipeg"],["Edmonton","America/Edmonton"],["Halifax","America/Halifax"],["St. John's","America/St_Johns"]],
+["Qatar","qa",["Doha","Asia/Qatar"]],["Kazakhstan","kz",["Almaty","Asia/Almaty"],["Aqtobe","Asia/Aqtobe"]],
+["Chad","td",["N'Djamena","Africa/Ndjamena"]],["Chile","cl",["Santiago","America/Santiago"],["Easter Island","Pacific/Easter"]],
+["China","cn",["Beijing","Asia/Shanghai"]],["Cyprus","cy",["Nicosia","Asia/Nicosia"]],
+["Singapore","sg",["Singapore","Asia/Singapore"]],["Colombia","co",["Bogota","America/Bogota"]],
+["Comoros","km",["Moroni","Indian/Comoro"]],["Congo","cg",["Brazzaville","Africa/Brazzaville"]],
+["North Korea","kp",["Pyongyang","Asia/Pyongyang"]],["South Korea","kr",["Seoul","Asia/Seoul"]],
+["Ivory Coast","ci",["Abidjan","Africa/Abidjan"]],["Costa Rica","cr",["San Jose","America/Costa_Rica"]],
+["Croatia","hr",["Zagreb","Europe/Zagreb"]],["Cuba","cu",["Havana","America/Havana"]],
+["Denmark","dk",["Copenhagen","Europe/Copenhagen"]],["Djibouti","dj",["Djibouti","Africa/Djibouti"]],
+["Dominica","dm",["Roseau","America/Dominica"]],["Egypt","eg",["Cairo","Africa/Cairo"]],
+["El Salvador","sv",["San Salvador","America/El_Salvador"]],["United Arab Emirates","ae",["Dubai","Asia/Dubai"]],
+["Ecuador","ec",["Quito","America/Guayaquil"],["Galapagos","Pacific/Galapagos"]],
+["Eritrea","er",["Asmara","Africa/Asmara"]],["Slovakia","sk",["Bratislava","Europe/Bratislava"]],
+["Slovenia","si",["Ljubljana","Europe/Ljubljana"]],["Spain","es",["Madrid","Europe/Madrid"],["Canary Islands","Atlantic/Canary"]],
+["United States","us",["New York","America/New_York"],["Chicago","America/Chicago"],["Denver","America/Denver"],["Phoenix","America/Phoenix"],["Los Angeles","America/Los_Angeles"],["Anchorage","America/Anchorage"],["Honolulu","Pacific/Honolulu"]],
+["Estonia","ee",["Tallinn","Europe/Tallinn"]],["Eswatini","sz",["Mbabane","Africa/Mbabane"]],
+["Ethiopia","et",["Addis Ababa","Africa/Addis_Ababa"]],["Fiji","fj",["Suva","Pacific/Fiji"]],
+["Philippines","ph",["Manila","Asia/Manila"]],["Finland","fi",["Helsinki","Europe/Helsinki"]],
+["France","fr",["Paris","Europe/Paris"]],["Gabon","ga",["Libreville","Africa/Libreville"]],
+["Gambia","gm",["Banjul","Africa/Banjul"]],["Ghana","gh",["Accra","Africa/Accra"]],
+["Georgia","ge",["Tbilisi","Asia/Tbilisi"]],["Grenada","gd",["St. George's","America/Grenada"]],
+["Greece","gr",["Athens","Europe/Athens"]],["Greenland (DK)","gl",["Nuuk","America/Nuuk"]],
+["Guatemala","gt",["Guatemala City","America/Guatemala"]],["Guyana","gy",["Georgetown","America/Guyana"]],
+["Guinea","gn",["Conakry","Africa/Conakry"]],["Equatorial Guinea","gq",["Malabo","Africa/Malabo"]],
+["Guinea-Bissau","gw",["Bissau","Africa/Bissau"]],["Haiti","ht",["Port-au-Prince","America/Port-au-Prince"]],
+["Honduras","hn",["Tegucigalpa","America/Tegucigalpa"]],["Hong Kong (CN)","hk",["Hong Kong","Asia/Hong_Kong"]],
+["Hungary","hu",["Budapest","Europe/Budapest"]],["Yemen","ye",["Sanaa","Asia/Aden"]],
+["Marshall Islands","mh",["Majuro","Pacific/Majuro"]],["Solomon Islands","sb",["Honiara","Pacific/Guadalcanal"]],
+["India","in",["New Delhi","Asia/Kolkata"]],
+["Indonesia","id",["Jakarta","Asia/Jakarta"],["Makassar","Asia/Makassar"],["Jayapura","Asia/Jayapura"]],
+["Iran","ir",["Tehran","Asia/Tehran"]],["Iraq","iq",["Baghdad","Asia/Baghdad"]],
+["Ireland","ie",["Dublin","Europe/Dublin"]],["Iceland","is",["Reykjavik","Atlantic/Reykjavik"]],
+["Israel","il",["Jerusalem","Asia/Jerusalem"]],["Italy","it",["Rome","Europe/Rome"]],
+["Jamaica","jm",["Kingston","America/Jamaica"]],["Japan","jp",["Tokyo","Asia/Tokyo"]],
+["Jordan","jo",["Amman","Asia/Amman"]],["Kiribati","ki",["Tarawa","Pacific/Tarawa"],["Kiritimati","Pacific/Kiritimati"]],
+["Kosovo","xk",["Pristina","Europe/Belgrade"]],["Kuwait","kw",["Kuwait City","Asia/Kuwait"]],
+["Laos","la",["Vientiane","Asia/Vientiane"]],["Lesotho","ls",["Maseru","Africa/Maseru"]],
+["Latvia","lv",["Riga","Europe/Riga"]],["Lebanon","lb",["Beirut","Asia/Beirut"]],
+["Liberia","lr",["Monrovia","Africa/Monrovia"]],["Libya","ly",["Tripoli","Africa/Tripoli"]],
+["Liechtenstein","li",["Vaduz","Europe/Vaduz"]],["Lithuania","lt",["Vilnius","Europe/Vilnius"]],
+["Luxembourg","lu",["Luxembourg","Europe/Luxembourg"]],["Macau (CN)","mo",["Macau","Asia/Macau"]],
+["North Macedonia","mk",["Skopje","Europe/Skopje"]],["Madagascar","mg",["Antananarivo","Indian/Antananarivo"]],
+["Malaysia","my",["Kuala Lumpur","Asia/Kuala_Lumpur"],["Kuching","Asia/Kuching"]],
+["Malawi","mw",["Lilongwe","Africa/Blantyre"]],["Maldives","mv",["Male","Indian/Maldives"]],
+["Mali","ml",["Bamako","Africa/Bamako"]],["Malta","mt",["Valletta","Europe/Malta"]],
+["Morocco","ma",["Rabat","Africa/Casablanca"]],["Mauritius","mu",["Port Louis","Indian/Mauritius"]],
+["Mauritania","mr",["Nouakchott","Africa/Nouakchott"]],
+["Mexico","mx",["Mexico City","America/Mexico_City"],["Cancun","America/Cancun"],["Chihuahua","America/Chihuahua"],["Tijuana","America/Tijuana"]],
+["Myanmar","mm",["Yangon","Asia/Yangon"]],["Micronesia","fm",["Palikir","Pacific/Pohnpei"]],
+["Mozambique","mz",["Maputo","Africa/Maputo"]],["Moldova","md",["Chisinau","Europe/Chisinau"]],
+["Monaco","mc",["Monaco","Europe/Monaco"]],["Mongolia","mn",["Ulaanbaatar","Asia/Ulaanbaatar"]],
+["Montenegro","me",["Podgorica","Europe/Podgorica"]],["Namibia","na",["Windhoek","Africa/Windhoek"]],
+["Nauru","nr",["Yaren","Pacific/Nauru"]],["Nepal","np",["Kathmandu","Asia/Kathmandu"]],
+["Nicaragua","ni",["Managua","America/Managua"]],["Niger","ne",["Niamey","Africa/Niamey"]],
+["Nigeria","ng",["Lagos","Africa/Lagos"]],["Norway","no",["Oslo","Europe/Oslo"]],
+["New Zealand","nz",["Auckland","Pacific/Auckland"],["Chatham","Pacific/Chatham"]],
+["Oman","om",["Muscat","Asia/Muscat"]],["Netherlands","nl",["Amsterdam","Europe/Amsterdam"]],
+["Palau","pw",["Ngerulmud","Pacific/Palau"]],["Palestine","ps",["Gaza","Asia/Gaza"],["Hebron","Asia/Hebron"]],
+["Panama","pa",["Panama City","America/Panama"]],["Papua New Guinea","pg",["Port Moresby","Pacific/Port_Moresby"]],
+["Pakistan","pk",["Islamabad","Asia/Karachi"]],["Paraguay","py",["Asuncion","America/Asuncion"]],
+["Peru","pe",["Lima","America/Lima"]],["French Polynesia (FR)","pf",["Papeete","Pacific/Tahiti"]],
+["Poland","pl",["Warsaw","Europe/Warsaw"]],["Puerto Rico (US)","pr",["San Juan","America/Puerto_Rico"]],
+["Portugal","pt",["Lisbon","Europe/Lisbon"],["Azores","Atlantic/Azores"],["Madeira","Atlantic/Madeira"]],
+["Kenya","ke",["Nairobi","Africa/Nairobi"]],["Kyrgyzstan","kg",["Bishkek","Asia/Bishkek"]],
+["United Kingdom","gb",["London","Europe/London"]],["Central African Republic","cf",["Bangui","Africa/Bangui"]],
+["DR Congo","cd",["Kinshasa","Africa/Kinshasa"],["Lubumbashi","Africa/Lubumbashi"]],
+["Dominican Republic","do",["Santo Domingo","America/Santo_Domingo"]],["Czechia","cz",["Prague","Europe/Prague"]],
+["Romania","ro",["Bucharest","Europe/Bucharest"]],
+["Rwanda","rw",["Kigali","Africa/Kigali"]],
+["Russia","ru",["Moscow","Europe/Moscow"],["Kaliningrad","Europe/Kaliningrad"],["Yekaterinburg","Asia/Yekaterinburg"],["Novosibirsk","Asia/Novosibirsk"],["Irkutsk","Asia/Irkutsk"],["Vladivostok","Asia/Vladivostok"],["Kamchatka","Asia/Kamchatka"]],
+["Samoa","ws",["Apia","Pacific/Apia"]],["American Samoa (US)","as",["Pago Pago","Pacific/Pago_Pago"]],
+["San Marino","sm",["San Marino","Europe/San_Marino"]],
+["Saint Lucia","lc",["Castries","America/St_Lucia"]],["Sao Tome and Principe","st",["Sao Tome","Africa/Sao_Tome"]],
+["Senegal","sn",["Dakar","Africa/Dakar"]],["Sierra Leone","sl",["Freetown","Africa/Freetown"]],
+["Serbia","rs",["Belgrade","Europe/Belgrade"]],["Seychelles","sc",["Victoria","Indian/Mahe"]],
+["Syria","sy",["Damascus","Asia/Damascus"]],["Somalia","so",["Mogadishu","Africa/Mogadishu"]],
+["Sri Lanka","lk",["Colombo","Asia/Colombo"]],["Sudan","sd",["Khartoum","Africa/Khartoum"]],
+["South Sudan","ss",["Juba","Africa/Juba"]],["Sweden","se",["Stockholm","Europe/Stockholm"]],
+["Switzerland","ch",["Bern","Europe/Zurich"]],["Suriname","sr",["Paramaribo","America/Paramaribo"]],
+["Thailand","th",["Bangkok","Asia/Bangkok"]],["Taiwan","tw",["Taipei","Asia/Taipei"]],
+["Tajikistan","tj",["Dushanbe","Asia/Dushanbe"]],["Tanzania","tz",["Dodoma","Africa/Dar_es_Salaam"]],
+["Timor-Leste","tl",["Dili","Asia/Dili"]],["Togo","tg",["Lome","Africa/Lome"]],
+["Tonga","to",["Nuku'alofa","Pacific/Tongatapu"]],["Trinidad and Tobago","tt",["Port of Spain","America/Port_of_Spain"]],
+["Tunisia","tn",["Tunis","Africa/Tunis"]],["Turkmenistan","tm",["Ashgabat","Asia/Ashgabat"]],
+["Türkiye","tr",["Istanbul","Europe/Istanbul"]],["Tuvalu","tv",["Funafuti","Pacific/Funafuti"]],
+["Ukraine","ua",["Kyiv","Europe/Kyiv"]],["Uganda","ug",["Kampala","Africa/Kampala"]],
+["Uruguay","uy",["Montevideo","America/Montevideo"]],["Uzbekistan","uz",["Tashkent","Asia/Tashkent"]],
+["Vanuatu","vu",["Port Vila","Pacific/Efate"]],["Vatican City","va",["Vatican City","Europe/Vatican"]],
+["Venezuela","ve",["Caracas","America/Caracas"]],["Vietnam","vn",["Hanoi","Asia/Ho_Chi_Minh"]],
+["Zambia","zm",["Lusaka","Africa/Lusaka"]],["Zimbabwe","zw",["Harare","Africa/Harare"]]
+];
+
+/* flatten into destinations: {name, iso, city, tz} */
+const D=[];
+for(const [name,iso,...zs] of C) for(const [city,tz] of zs) D.push({name,iso,city,tz});
+const idx=tz=>D.findIndex(d=>d.tz===tz);
+
+const norm=s=>s.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
+D.forEach(d=>d.q=norm(d.name+' '+d.city));
+
+const root=document.getElementById('mc');
+const panels=[...root.querySelectorAll('.panel')];
+const windBtn=root.querySelector('.wind');
+const sheet=document.querySelector('.sheet');
+const search=sheet.querySelector('input');
+const list=sheet.querySelector('.list');
+
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const st={sel:[idx('Asia/Jerusalem'),idx('America/Sao_Paulo')],wind:!reduced.matches,pin:false,strength:5};
+
+try{const s=JSON.parse(localStorage.getItem('meridian')||'null');
+ if(s){const a=idx(s.tz?.[0]),b=idx(s.tz?.[1]);if(a>=0&&b>=0)st.sel=[a,b];
+ if(typeof s.wind==='boolean')st.wind=s.wind;if(typeof s.pin==='boolean')st.pin=s.pin}
+}catch{}
+const save=()=>{try{localStorage.setItem('meridian',
+  JSON.stringify({tz:st.sel.map(i=>D[i].tz),wind:st.wind,pin:st.pin}))}catch{}};
+
+/* flags: each flag-icons SVG rasterized once */
+const tex={};
+function flag(iso){
+  if(tex[iso]!==undefined)return tex[iso];
+  tex[iso]=null;
+  const im=new Image();im.crossOrigin='anonymous';
+  im.onload=()=>{const c=document.createElement('canvas');c.width=800;c.height=600;
+    c.getContext('2d').drawImage(im,0,0,800,600);tex[iso]=c};
+  im.onerror=()=>{tex[iso]=false};
+  im.src='https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/'+iso+'.svg';
+  return null;
+}
+
+const fmtCache={};
+const fmt=(tz,o)=>{const k=tz+JSON.stringify(o);return fmtCache[k]||(fmtCache[k]=new Intl.DateTimeFormat('en-US',{timeZone:tz,...o}))};
+
+function offsetMin(date,tz){
+  const p=fmt(tz,{timeZoneName:'longOffset'}).formatToParts(date).find(x=>x.type==='timeZoneName').value;
+  const m=p.match(/GMT([+-])(\d{1,2}):(\d{2})/);
+  return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;
+}
+const utcLabel=m=>{const s=m<0?'-':'+',a=Math.abs(m);return'UTC'+s+Math.floor(a/60)+(a%60?':'+String(a%60).padStart(2,'0'):'')};
+const durLabel=m=>{const a=Math.abs(m),h=Math.floor(a/60),mi=a%60;
+  return h?h+'h'+(mi?String(mi).padStart(2,'0'):''):mi+' min'};
+
+function tick(){
+  const now=new Date(),offs=[],days=[];
+  panels.forEach((p,i)=>{
+    const d=D[st.sel[i]];
+    const t=fmt(d.tz,{hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(now);
+    const g=k=>t.find(x=>x.type===k).value;
+    p.querySelector('.hm').textContent=g('hour')+':'+g('minute');
+    p.querySelector('.secs').textContent=g('second');
+    p.querySelector('.date').textContent=fmt(d.tz,{weekday:'short',day:'numeric',month:'short'}).format(now);
+    const o=offsetMin(now,d.tz);offs.push(o);
+    days.push(fmt(d.tz,{year:'numeric',month:'2-digit',day:'2-digit'}).format(now));
+    p.querySelector('.off').textContent=utcLabel(o);
+    const h=+g('hour');
+    p.querySelector('.per').textContent=h>=6&&h<18?'☀ Daytime':'☾ Night';
+  });
+  const delta=offs[0]-offs[1],a=D[st.sel[0]],b=D[st.sel[1]];
+  let txt;
+  if(delta===0)txt=a.name+' and '+b.name+' are at <strong>the same time</strong>.';
+  else txt=a.name+' is <strong>'+durLabel(delta)+(delta>0?' ahead':' behind')+'</strong> of '+b.name+'.';
+  if(days[0]!==days[1])txt+=' Different days.';
+  const el=root.querySelector('.diff');
+  if(el.innerHTML!==txt)el.innerHTML=txt;
+}
+
+function render(){
+  panels.forEach((p,i)=>{
+    const d=D[st.sel[i]];
+    p.querySelector('.pick b').textContent=d.name;
+    p.querySelector('.city').textContent=d.city+' · '+d.tz;
+    flag(d.iso);
+  });
+  windBtn.textContent=st.wind?'Pause wind':'Start wind';
+  windBtn.setAttribute('aria-pressed',String(!st.wind));
+  tick();
+}
+
+/* searchable picker */
+let target=0,cursor=0,rows=[];
+function openSheet(i){
+  target=i;sheet.setAttribute('open','');search.value='';fill('');
+  const cur=rows.indexOf(st.sel[i]);cursor=cur<0?0:cur;mark();
+  search.focus();
+}
+function closeSheet(){sheet.removeAttribute('open');panels[target].querySelector('.pick').focus()}
+function fill(q){
+  const n=norm(q.trim());
+  rows=[];list.innerHTML='';
+  D.forEach((d,i)=>{if(!n||d.q.includes(n))rows.push(i)});
+  if(!rows.length){list.innerHTML='<div class="empty">No destination found.</div>';return}
+  const frag=document.createDocumentFragment();
+  rows.forEach((i,r)=>{
+    const d=D[i],b=document.createElement('button');
+    b.className='opt';b.type='button';b.role='option';
+    b.setAttribute('aria-selected',String(i===st.sel[target]));
+    b.innerHTML='<b></b><span></span>';
+    b.firstChild.textContent=d.name;b.lastChild.textContent=d.city;
+    b.onclick=()=>choose(i);b.dataset.r=r;
+    frag.appendChild(b)
+  });
+  list.appendChild(frag);cursor=0;mark();
+}
+function mark(){
+  [...list.children].forEach((el,r)=>el.classList.toggle('on',r===cursor));
+  list.children[cursor]?.scrollIntoView({block:'nearest'});
+}
+function choose(i){
+  const other=target===0?1:0;
+  st.sel[target]=i;render();save();closeSheet();
+}
+panels.forEach((p,i)=>p.querySelector('.pick').onclick=()=>openSheet(i));
+search.oninput=()=>fill(search.value);
+sheet.onclick=e=>{if(e.target===sheet)closeSheet()};
+sheet.onkeydown=e=>{
+  if(e.key==='Escape'){e.preventDefault();closeSheet()}
+  else if(e.key==='ArrowDown'){e.preventDefault();cursor=Math.min(cursor+1,rows.length-1);mark()}
+  else if(e.key==='ArrowUp'){e.preventDefault();cursor=Math.max(cursor-1,0);mark()}
+  else if(e.key==='Enter'){e.preventDefault();if(rows[cursor]!=null)choose(rows[cursor])}
+};
+windBtn.onclick=()=>{st.wind=!st.wind;render();save()};
+/* window controls, when running inside the macOS app */
+const native=window.webkit?.messageHandlers;
+document.querySelectorAll('.wbtn:not(.pin)').forEach(b=>{
+  b.onclick=()=>native?.[b.dataset.act]?.postMessage(1)});
+
+const pinBtn=root.querySelector('.pin');
+function applyPin(){
+  pinBtn.setAttribute('aria-pressed',String(st.pin));
+  pinBtn.title=st.pin?'Pinned on top — click to release':'Keep on top';
+  pinBtn.setAttribute('aria-label',pinBtn.title);
+  native?.pin?.postMessage(st.pin);
+}
+pinBtn.onclick=()=>{st.pin=!st.pin;applyPin();save()};
+applyPin();
+if(native?.drag){
+  // drag by the header and footer; controls stay clickable
+  for(const el of [root.querySelector('.top'),root.querySelector('.bot')])
+    el.addEventListener('mousedown',e=>{
+      if(e.button!==0||e.target.closest('button,input,select,a'))return;
+      native.drag.postMessage(1)});
+}
+reduced.addEventListener('change',e=>{if(e.matches){st.wind=false;render();save()}});
+
+/* wind animation */
+let phase=0,last=0,raf=0,hidden=false;
+function frame(t){
+  raf=requestAnimationFrame(frame);
+  if(hidden)return;
+  if(st.wind)phase+=Math.min(t-last,50)*.001;
+  last=t;
+  panels.forEach((p,i)=>{
+    const cv=p.querySelector('canvas'),ctx=cv.getContext('2d');
+    const w=p.clientWidth,h=p.clientHeight,dpr=Math.min(devicePixelRatio||1,2);
+    if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+    const tx=tex[D[st.sel[i]].iso];
+    if(!tx)return;
+    const fw=w+8,fh=fw*.75,fl=-4,ft=(h-fh)/2-5;
+    for(let x=0;x<w;x+=2){
+      const wave=Math.sin(x/w*7-phase*1.5+i)*st.strength+Math.sin(x/w*13-phase*1.05)*st.strength*.22;
+      const sx=(x-fl)/fw*tx.width;
+      ctx.drawImage(tx,sx,0,2/fw*tx.width,tx.height,x,ft+wave,2.15,fh);
+      const sh=Math.sin(x/w*7-phase*1.5+i);
+      ctx.fillStyle=sh>0?'rgba(255,255,255,'+sh*.16+')':'rgba(0,0,0,'+-sh*.24+')';
+      ctx.fillRect(x,0,2.5,h);
+    }
+  });
+}
+document.addEventListener('visibilitychange',()=>{hidden=document.hidden;last=performance.now()});
+
+/* Offline + installable. Only over http(s): inside the native app the page is
+   a file:// URL, where service workers do not apply. */
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+render();setInterval(tick,1000);raf=requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,137 +1,127 @@
-# World Clock
+<div align="center">
 
-A minimalist desktop clock that shows the time of a chosen country side by side with a home country's time (Brazil by default), including the time zone and the hour difference between the two. Originally built for Linux (KDE Plasma); also runs on Windows 11 and macOS.
+# Meridian
 
-![World Clock demo](docs/world_clock.gif)
+**A world clock that puts two destinations side by side** — each with its own
+flag waving behind the time, the current UTC offset, and how far apart the two are.
 
-## Features
+![Meridian in action](docs/demo.gif)
 
-- Real-time clock for the selected target country, next to your chosen home country's time
-- Both the target and the home country can be changed independently
-- Smart search: type any part of a country's (or city's) name to filter the list — "sydney" finds Australia (Sydney), not just names starting with it
-- Time zone (UTC±X) shown for both countries, plus the hour difference between them, calculated automatically (accounts for daylight saving time)
-- About 40 pre-loaded countries, each with a flag, in a searchable picker
-- Dark, minimalist design with rounded corners and a soft shadow
-- Borderless, draggable window, optionally always on top
-- Remembers both selections between runs
+[**Open in your browser**](https://wallasace.github.io/meridian/) ·
+[Download for desktop](https://github.com/wallasace/meridian/releases/latest) ·
+[How it works](#how-its-put-together)
 
-## Requirements
+[![License: MIT](https://img.shields.io/badge/License-MIT-7fb0ea.svg)](LICENSE)
+![Countries](https://img.shields.io/badge/countries-200-4bc89a.svg)
+![Size](https://img.shields.io/badge/app-36%20KB-4bc89a.svg)
+![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux%20·%20web-7fb0ea.svg)
 
-- Linux with a graphical session (tested on Fedora with KDE Plasma / Wayland) **or** Windows 11 **or** macOS 10.13+
-- Python 3.9+
-- [PySide6](https://pypi.org/project/PySide6/)
-- On Windows only: [`tzdata`](https://pypi.org/project/tzdata/) — Windows has no built-in IANA time zone database, so Python's `zoneinfo` needs this package to resolve time zones like `Europe/Lisbon`. It's listed in `requirements.txt` (installed automatically on Windows, skipped on Linux and macOS) so you don't need to install it by hand.
+</div>
 
-## Installation
+Nothing to install to try it. Your browser can also keep it as a real app —
+see [Install from the browser](#install-from-the-browser).
 
-### Linux & macOS
+## What it does
 
-```bash
-git clone https://github.com/<your-username>/world-clock.git
-cd world-clock
-pip install -r requirements.txt
-```
+- Live local time for two destinations, to the second, from one shared instant
+- **200 countries and territories, 245 cities** — every country spanning several
+  time zones lets you pick the city (Brazil has 8, the US 7, Russia 7)
+- Handles daylight saving automatically, and offsets that aren't whole hours
+  (Nepal is `UTC+5:45`, India `UTC+5:30`)
+- Says the difference in plain words: *"Israel is 6h ahead of Brazil"*, and
+  flags when the two are on different calendar days
+- Search by country or city, accent-insensitive — typing `sao` finds São Paulo
+- Flags wave like cloth; the motion can be paused, and it respects your system's
+  reduced-motion setting
+- Follows your light/dark theme
+- Remembers your destinations, the wind setting and the pin between sessions
 
-### Windows (PowerShell)
+## Install from the browser
 
-```powershell
-git clone https://github.com/<your-username>/world-clock.git
-cd world-clock
-py -m pip install -r requirements.txt
-```
+On the [live page](https://wallasace.github.io/meridian/):
 
-## Usage
+| | |
+|---|---|
+| **Chrome / Edge** (Windows, Linux, macOS) | Click the install icon in the address bar, or menu → *Cast, save and share* → *Install page as app* |
+| **Android** | Menu → *Add to Home screen* |
+| **iPhone / iPad** | Share → *Add to Home Screen* |
 
-### Linux & macOS
+It opens in its own window, with no address bar, and works offline after the
+first visit. No download, no security warnings.
 
-```bash
-python3 world_clock.py
-```
+## Desktop apps
 
-### Windows
+Native windows with no browser chrome — and a **pin** button that keeps the
+clock above other windows, which the browser version cannot do.
 
-```powershell
-py world_clock.py
-```
+Grab one from the [latest release](https://github.com/wallasace/meridian/releases/latest):
 
-- Click the target country field (top right, large) and start typing to search — matches anywhere in the name, not just the start
-- Click the home country field (bottom right, smaller) to search and change the country you're comparing against
-- Click the "⌄" next to either field to browse the full, unfiltered country list
-- Click and drag any empty area of the window to move it
-- Click the "×" in the top-right corner to close
+| System | File | First launch |
+|---|---|---|
+| macOS 11+ | `Meridian-macOS.zip` | Right-click the app → **Open** (once) |
+| Windows 10/11 | `Meridian-Windows.zip` | **More info** → **Run anyway** (once) |
+| Linux (GTK) | `Meridian-Linux.tar.gz` | `./install.sh` |
 
-### Application menu shortcut (KDE Plasma)
+That extra click on the first launch is the unsigned-app warning. Code signing
+certificates cost money every year and this project has none — the warning is
+about a missing certificate, not about the app.
 
-To launch it from the Plasma menu like any other app, create `~/.local/share/applications/world-clock.desktop` with the following content (adjust the `Exec` path to wherever you cloned the project):
+**Window controls:** 📌 keep on top · − minimize · × close (⌘W / Ctrl+W also
+work). Drag the window by its header or footer.
 
-```ini
-[Desktop Entry]
-Type=Application
-Name=World Clock
-Comment=Time in countries around the world compared to Brasília time
-Exec=python3 /full/path/to/world-clock/world_clock.py
-Icon=clock
-Terminal=false
-Categories=Utility;Clock;
-```
+## Building it yourself
 
-Then run `update-desktop-database ~/.local/share/applications` and look for "World Clock" in the menu.
-
-### Launchpad / Dock shortcut (macOS)
-
-#### Option 1: Using the build script (recommended)
-
-Create a native .app bundle:
+The app itself is one file, `index.html`, and needs no build step at all — open
+it and it runs. Each desktop wrapper is a thin native shell around it:
 
 ```bash
-python3 build_macos_app.py
+# macOS — needs Xcode command line tools
+./desktop/macos/build.sh
+
+# Windows — needs the .NET 8 SDK (winget install Microsoft.DotNet.SDK.8)
+.\desktop\windows\build.ps1
+
+# Linux — no build, just system packages
+sudo apt install python3-gi gir1.2-webkit2-4.1   # Debian/Ubuntu
+./desktop/linux/install.sh
 ```
 
-This creates `World Clock.app` in the current directory. You can:
+Or let GitHub build all three: push a tag and the
+[release workflow](.github/workflows/release.yml) compiles on macOS, Windows and
+Linux runners and publishes the files.
 
-- Double-click it to run
-- Drag it to Applications folder to install system-wide
-- Right-click in Dock → **Options** → **Keep in Dock** for quick access
-
-#### Option 2: Using Automator
-
-1. Open **Automator** (Applications → Automator)
-2. Create a new **Application**
-3. Add a **Run Shell Script** action with:
-   ```bash
-   /usr/local/bin/python3 /full/path/to/world-clock/world_clock.py
-   ```
-   (or use `python3` if it's in your PATH)
-4. Save as "World Clock" to Applications folder
-5. Optionally, right-click the saved app → **Get Info** → **Change Icon** to pick something clock-shaped
-
-### Start Menu / taskbar shortcut (Windows)
-
-1. Right-click on your Desktop → **New → Shortcut**.
-2. For the location, point it at `pythonw.exe` (the windowless launcher, so no console window stays open) plus the script path, e.g.:
-   ```
-   C:\Users\<you>\AppData\Local\Programs\Python\Python312\pythonw.exe C:\full\path\to\world-clock\world_clock.py
-   ```
-3. Name the shortcut "World Clock" and finish.
-4. Optionally right-click the new shortcut → **Properties** → **Change Icon** to pick something clock-shaped, then drag the shortcut onto the taskbar or into `shell:startup` to launch it at login.
-
-## Adding or removing countries
-
-The country list lives at the top of [world_clock.py](world_clock.py), in the `COUNTRIES` constant. Each entry is a tuple of `(display name, IANA time zone, ISO country code)`:
-
-```python
-("Portugal", "Europe/Lisbon", "PT"),
+```bash
+git tag v1.0.0 && git push origin v1.0.0
 ```
 
-The two-letter code is used to look up the matching flag image in `assets/flags/` (named `<code>.png`, lowercase) — add a new PNG there if the country isn't already covered. Time zones follow the [IANA time zone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). The bundled fonts (see below) cover Latin script plus accents (e.g. "Brasília"); a country name in another script would need its own font handling.
+## How it's put together
 
-## Tech stack
+```
+index.html              the whole app — layout, clocks, catalog, flag animation
+manifest.webmanifest    lets browsers install it as an app
+sw.js                   offline cache
+icons/                  app icons
+desktop/macos/          Swift + WebKit wrapper
+desktop/windows/        C# + WebView2 wrapper
+desktop/linux/          Python + GTK/WebKitGTK wrapper
+```
 
-- [PySide6](https://doc.qt.io/qtforpython/) (Qt6) for the interface
-- `zoneinfo` (Python standard library, backed by the `tzdata` package on Windows) for time zone calculations
-- Flag images in `assets/flags/` are rasterized from [flag-icons](https://github.com/lipis/flag-icons) (MIT license — see [assets/flags/LICENSE](assets/flags/LICENSE)). They're bundled as PNGs rather than rendered as emoji because Qt doesn't reliably compose flag emoji into an actual flag picture on every platform/font — a real image looks the same everywhere.
-- Fonts in `assets/fonts/` are Noto Sans / Noto Sans Mono (SIL Open Font License — see [assets/fonts/LICENSE](assets/fonts/LICENSE)), trimmed to the Latin characters this app actually uses (~65KB per weight instead of the ~2MB full variable font). Bundling them means the app looks identical on Linux and Windows instead of silently falling back to whatever generic font Windows picks when Noto Sans isn't installed.
+All three wrappers speak the same four messages to the page — `close`,
+`minimize`, `drag`, `pin` — so `index.html` carries no per-platform branches.
+
+Time is computed with `Intl.DateTimeFormat` over IANA time zone identifiers, so
+daylight saving and odd offsets come from the system's own tz database rather
+than from hardcoded rules.
+
+## Credits
+
+- Flags — [flag-icons](https://github.com/lipis/flag-icons) by Panayiotis Lipiridis (MIT)
+- Type — [Manrope](https://github.com/sharanda/manrope) by Mikhail Sharanda and
+  [DM Sans](https://github.com/googlefonts/dm-fonts) by Colophon Foundry (both SIL OFL 1.1)
+- Time zones — the [IANA time zone database](https://www.iana.org/time-zones),
+  via the browser's `Intl` API
+- Country codes — ISO 3166-1 alpha-2
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE). Built by [wallasace](https://github.com/wallasace).
