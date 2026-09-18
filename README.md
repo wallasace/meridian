@@ -1,6 +1,6 @@
 # World Clock
 
-A minimalist desktop clock that shows the time of a chosen country side by side with a home country's time (Brazil by default), including the time zone and the hour difference between the two. Originally built for Linux (KDE Plasma); also runs on Windows 11.
+A minimalist desktop clock that shows the time of a chosen country side by side with a home country's time (Brazil by default), including the time zone and the hour difference between the two. Originally built for Linux (KDE Plasma); also runs on Windows 11 and macOS.
 
 ![World Clock demo](docs/world_clock.gif)
 
@@ -17,12 +17,14 @@ A minimalist desktop clock that shows the time of a chosen country side by side 
 
 ## Requirements
 
-- Linux with a graphical session (tested on Fedora with KDE Plasma / Wayland) **or** Windows 11
+- Linux with a graphical session (tested on Fedora with KDE Plasma / Wayland) **or** Windows 11 **or** macOS 10.13+
 - Python 3.9+
 - [PySide6](https://pypi.org/project/PySide6/)
-- On Windows only: [`tzdata`](https://pypi.org/project/tzdata/) — Windows has no built-in IANA time zone database, so Python's `zoneinfo` needs this package to resolve time zones like `Europe/Lisbon`. It's listed in `requirements.txt` (installed automatically on Windows, skipped on Linux) so you don't need to install it by hand.
+- On Windows only: [`tzdata`](https://pypi.org/project/tzdata/) — Windows has no built-in IANA time zone database, so Python's `zoneinfo` needs this package to resolve time zones like `Europe/Lisbon`. It's listed in `requirements.txt` (installed automatically on Windows, skipped on Linux and macOS) so you don't need to install it by hand.
 
 ## Installation
+
+### Linux & macOS
 
 ```bash
 git clone https://github.com/<your-username>/world-clock.git
@@ -30,7 +32,7 @@ cd world-clock
 pip install -r requirements.txt
 ```
 
-On Windows (PowerShell), the equivalent is:
+### Windows (PowerShell)
 
 ```powershell
 git clone https://github.com/<your-username>/world-clock.git
@@ -40,11 +42,13 @@ py -m pip install -r requirements.txt
 
 ## Usage
 
+### Linux & macOS
+
 ```bash
 python3 world_clock.py
 ```
 
-On Windows:
+### Windows
 
 ```powershell
 py world_clock.py
@@ -72,6 +76,34 @@ Categories=Utility;Clock;
 ```
 
 Then run `update-desktop-database ~/.local/share/applications` and look for "World Clock" in the menu.
+
+### Launchpad / Dock shortcut (macOS)
+
+#### Option 1: Using the build script (recommended)
+
+Create a native .app bundle:
+
+```bash
+python3 build_macos_app.py
+```
+
+This creates `World Clock.app` in the current directory. You can:
+
+- Double-click it to run
+- Drag it to Applications folder to install system-wide
+- Right-click in Dock → **Options** → **Keep in Dock** for quick access
+
+#### Option 2: Using Automator
+
+1. Open **Automator** (Applications → Automator)
+2. Create a new **Application**
+3. Add a **Run Shell Script** action with:
+   ```bash
+   /usr/local/bin/python3 /full/path/to/world-clock/world_clock.py
+   ```
+   (or use `python3` if it's in your PATH)
+4. Save as "World Clock" to Applications folder
+5. Optionally, right-click the saved app → **Get Info** → **Change Icon** to pick something clock-shaped
 
 ### Start Menu / taskbar shortcut (Windows)
 
