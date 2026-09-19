@@ -8,8 +8,10 @@
     <AssemblyName>Meridian</AssemblyName>
     <RootNamespace>Meridian</RootNamespace>
     <Version>1.0.0</Version>
-    <Company>wallasace</Company>
+    <Company>Wallace Ferreira de Abreu</Company>
+    <Authors>Wallace Ferreira de Abreu</Authors>
     <Product>Meridian World Clock</Product>
+    <Copyright>Copyright © 2026 Wallace Ferreira de Abreu</Copyright>
     <ApplicationIcon>meridian.ico</ApplicationIcon>
     <!-- One self-contained .exe: the person unzips and runs, no .NET install. -->
     <PublishSingleFile>true</PublishSingleFile>

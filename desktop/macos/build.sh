@@ -31,7 +31,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleVersion</key><string>1</string>
   <key>LSMinimumSystemVersion</key><string>11.0</string>
   <key>NSHighResolutionCapable</key><true/>
-  <key>NSHumanReadableCopyright</key><string>MIT</string>
+  <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Wallace Ferreira de Abreu. Licensed under PolyForm Internal Use 1.0.0.</string>
 $([ -f icon.icns ] && echo "  <key>CFBundleIconFile</key><string>icon</string>")
 </dict>
 </plist>

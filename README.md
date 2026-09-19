@@ -11,7 +11,8 @@ flag waving behind the time, the current UTC offset, and how far apart the two a
 [Download for desktop](https://github.com/wallasace/meridian/releases/latest) ·
 [How it works](#how-its-put-together)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-7fb0ea.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-PolyForm%20Internal%20Use%201.0.0-7fb0ea.svg)](LICENSE)
+[![Source available](https://img.shields.io/badge/source--available-not%20open%20source-8b93a7.svg)](#licence)
 ![Countries](https://img.shields.io/badge/countries-200-4bc89a.svg)
 ![Size](https://img.shields.io/badge/app-36%20KB-4bc89a.svg)
 ![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux%20·%20web-7fb0ea.svg)
@@ -20,6 +21,10 @@ flag waving behind the time, the current UTC offset, and how far apart the two a
 
 Nothing to install to try it. Your browser can also keep it as a real app —
 see [Install from the browser](#install-from-the-browser).
+
+Meridian is **source-available**: free to run and modify for your own and your
+company's internal use, and the code is here to read. It is not open source —
+see [Licence](#licence).
 
 ## What it does
 
@@ -113,6 +118,15 @@ Time is computed with `Intl.DateTimeFormat` over IANA time zone identifiers, so
 daylight saving and odd offsets come from the system's own tz database rather
 than from hardcoded rules.
 
+## Contributing
+
+Bug reports, fixes and ideas are welcome. Start at
+[CONTRIBUTING.md](CONTRIBUTING.md) — it covers how to report a problem, the
+code conventions, what to test, and how review works.
+
+Security problems go through [SECURITY.md](SECURITY.md) instead of public
+issues.
+
 ## Credits
 
 - Flags — [flag-icons](https://github.com/lipis/flag-icons) by Panayiotis Lipiridis (MIT)
@@ -122,6 +136,45 @@ than from hardcoded rules.
   via the browser's `Intl` API
 - Country codes — ISO 3166-1 alpha-2
 
-## License
+## Licence
 
-MIT — see [LICENSE](LICENSE). Built by [wallasace](https://github.com/wallasace).
+Meridian is **source-available software, not open source**. The code is public
+to read, study, run and modify — but it is not published under an OSI-approved
+open source licence, and it does not turn into one later. Calling it open
+source would be inaccurate, so this project does not.
+
+It is licensed under the
+[PolyForm Internal Use License 1.0.0](https://polyformproject.org/licenses/internal-use/1.0.0),
+a standard licence written by lawyers. The full text is in [LICENSE](LICENSE).
+
+**Free, no licence to request:**
+
+- running Meridian yourself, on any device
+- your team or your entire company running it internally
+- reading the code and learning from it
+- modifying it for your own internal use
+- forking it to send a pull request — granted explicitly in [LICENSE](LICENSE)
+
+**Needs a commercial licence:**
+
+- selling it, or charging for access to it
+- shipping it inside a product or service you offer to customers
+- hosting it as a service reachable from outside your organization
+- redistributing it through a store, registry or installer
+
+The boundary between the two, with each term defined, is in
+[COMMERCIAL.md](COMMERCIAL.md) — including how to ask. Asking is free, and the
+answer is often "what you are doing is already covered".
+
+Third-party material and its licences are listed in [NOTICE](NOTICE).
+
+## Maintainer
+
+Meridian is created and maintained by **Wallace Ferreira de Abreu**
+([@wallasace](https://github.com/wallasace)), who holds the copyright.
+
+Copyright © 2026 Wallace Ferreira de Abreu
+
+Contributors keep the copyright in their own contributions — see
+[CLA.md](CLA.md). Forks are welcome under the terms above, and a fork does not
+imply endorsement by this project.
