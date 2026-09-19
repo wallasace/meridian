@@ -14,7 +14,7 @@ flag waving behind the time, the current UTC offset, and how far apart the two a
 [![License](https://img.shields.io/badge/license-PolyForm%20Internal%20Use%201.0.0-7fb0ea.svg)](LICENSE)
 [![Source available](https://img.shields.io/badge/source--available-not%20open%20source-8b93a7.svg)](#licence)
 ![Countries](https://img.shields.io/badge/countries-200-4bc89a.svg)
-![Size](https://img.shields.io/badge/app-36%20KB-4bc89a.svg)
+![Size](https://img.shields.io/badge/app-33%20KB-4bc89a.svg)
 ![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux%20·%20web-7fb0ea.svg)
 
 </div>
