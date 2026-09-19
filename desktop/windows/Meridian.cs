@@ -85,14 +85,24 @@ sealed class MeridianForm : Form
 
         core.WebMessageReceived += (s, e) =>
         {
-            using var doc = JsonDocument.Parse(e.WebMessageAsJson);
-            var root = doc.RootElement;
-            if (!root.TryGetProperty("name", out var n)) return;
-            var val = root.TryGetProperty("value", out var v) ? v : default;
+            // Read everything out before queueing the work. A JsonElement is a
+            // window onto the document's buffer, and BeginInvoke runs after this
+            // handler returns — by then the document is disposed and reading
+            // through the element throws.
+            string name;
+            bool flag;
+            using (var doc = JsonDocument.Parse(e.WebMessageAsJson))
+            {
+                var root = doc.RootElement;
+                if (!root.TryGetProperty("name", out var n)) return;
+                name = n.GetString();
+                flag = root.TryGetProperty("value", out var v)
+                       && v.ValueKind == JsonValueKind.True;
+            }
 
             BeginInvoke(new Action(() =>
             {
-                switch (n.GetString())
+                switch (name)
                 {
                     case "close": Close(); break;
                     case "minimize": WindowState = FormWindowState.Minimized; break;
@@ -101,7 +111,7 @@ sealed class MeridianForm : Form
                         SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
                         break;
                     case "pin":
-                        TopMost = val.ValueKind == JsonValueKind.True;
+                        TopMost = flag;
                         break;
                 }
             }));
