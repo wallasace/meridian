@@ -143,9 +143,9 @@ jobs:
             Prefer nothing to download? Open it in the browser and install from
             there instead: https://wallasace.github.io/meridian/
 
-            ---
+            ### Licence
 
-            **Licence.** Meridian is source-available, not open source. Running
+            Meridian is source-available, not open source. Running
             and modifying it for your own or your company's internal use is
             free. Selling it, shipping it inside a product, or hosting it as a
             service needs a separate licence — see
