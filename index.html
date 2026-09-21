@@ -467,9 +467,14 @@ document.querySelectorAll('.wbtn:not(.pin)').forEach(b=>{
   b.onclick=()=>native?.[b.dataset.act]?.postMessage(1)});
 
 /* Windows: the frame is opaque, so instead of stretching the card to fill a
-   fixed window, the window is sized to the card's natural height. */
-if(native?.fit&&document.documentElement.classList.contains('win'))
-  new ResizeObserver(()=>native.fit.postMessage(Math.ceil(root.getBoundingClientRect().height))).observe(root);
+   fixed window, the window is sized to the card's natural height.
+   Only the Windows wrapper handles 'fit', so no class check is needed — and
+   one would fail anyway: the wrapper tags <html> with 'win' after this runs. */
+if(native?.fit){
+  const fit=()=>native.fit.postMessage(Math.ceil(root.getBoundingClientRect().height));
+  new ResizeObserver(fit).observe(root);
+  addEventListener('load',fit);
+}
 
 const pinBtn=root.querySelector('.pin');
 function applyPin(){
