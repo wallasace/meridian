@@ -90,10 +90,9 @@ html.native :is(.top,.bot) :is(button,input,a){cursor:pointer}
 /* Windows: the window frame cannot be see-through, so the gap around the card
    would show as a solid border. The card fills the window instead, and the
    frame itself supplies the rounded corners. */
-html.win body{padding:0;align-items:stretch}
-html.win #mc{max-width:none;border:0;box-shadow:none;min-height:100vh;
-display:flex;flex-direction:column}
-html.win .panels{flex:1}   /* panels take the slack, so the footer sits at the bottom */
+html.win,html.win body{background:var(--surface)}
+html.win body{padding:0;min-height:0;display:block}
+html.win #mc{max-width:none;border:0;box-shadow:none}
 
 .panels{display:grid;grid-template-columns:1fr 1fr;position:relative}
 .panel{min-width:0;position:relative;overflow:hidden;padding:22px 25px 20px;min-height:278px;isolation:isolate}
@@ -466,6 +465,11 @@ windBtn.onclick=()=>{st.wind=!st.wind;render();save()};
 const native=window.webkit?.messageHandlers;
 document.querySelectorAll('.wbtn:not(.pin)').forEach(b=>{
   b.onclick=()=>native?.[b.dataset.act]?.postMessage(1)});
+
+/* Windows: the frame is opaque, so instead of stretching the card to fill a
+   fixed window, the window is sized to the card's natural height. */
+if(native?.fit&&document.documentElement.classList.contains('win'))
+  new ResizeObserver(()=>native.fit.postMessage(Math.ceil(root.getBoundingClientRect().height))).observe(root);
 
 const pinBtn=root.querySelector('.pin');
 function applyPin(){

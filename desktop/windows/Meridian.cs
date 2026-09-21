@@ -1,6 +1,6 @@
 // Meridian for Windows: a borderless window hosting WebView2, mirroring the
 // macOS wrapper. The page draws its own title bar; this file only provides the
-// window and answers the four messages the page sends (close/minimize/drag/pin).
+// window and answers the messages the page sends (close/minimize/drag/pin/fit).
 using System;
 using System.Drawing;
 using System.IO;
@@ -37,8 +37,9 @@ sealed class MeridianForm : Form
         Text = "Meridian";
         FormBorderStyle = FormBorderStyle.None;
         StartPosition = FormStartPosition.CenterScreen;
-        ClientSize = new Size(768, 500);
-        MinimumSize = new Size(360, 440);
+        // Sizes are in physical pixels; scale them so 125%/150% displays match.
+        ClientSize = new Size(Dpi(768), Dpi(470));
+        MinimumSize = new Size(Dpi(360), Dpi(200));
         BackColor = Color.FromArgb(16, 23, 34);
         KeyPreview = true;
 
@@ -91,13 +92,18 @@ sealed class MeridianForm : Form
             // through the element throws.
             string name;
             bool flag;
+            double number = 0;
             using (var doc = JsonDocument.Parse(e.WebMessageAsJson))
             {
                 var root = doc.RootElement;
                 if (!root.TryGetProperty("name", out var n)) return;
                 name = n.GetString();
-                flag = root.TryGetProperty("value", out var v)
-                       && v.ValueKind == JsonValueKind.True;
+                if (root.TryGetProperty("value", out var v))
+                {
+                    flag = v.ValueKind == JsonValueKind.True;
+                    if (v.ValueKind == JsonValueKind.Number) number = v.GetDouble();
+                }
+                else flag = false;
             }
 
             BeginInvoke(new Action(() =>
@@ -109,6 +115,10 @@ sealed class MeridianForm : Form
                     case "drag":
                         ReleaseCapture();
                         SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+                        break;
+                    case "fit":
+                        // The page reports its height in CSS pixels.
+                        if (number > 100) ClientSize = new Size(ClientSize.Width, Dpi(number));
                         break;
                     case "pin":
                         TopMost = flag;
@@ -136,6 +146,8 @@ sealed class MeridianForm : Form
         if (File.Exists(page)) core.Navigate(new Uri(page).AbsoluteUri);
     }
 
+    int Dpi(double cssPx) => (int)Math.Ceiling(cssPx * DeviceDpi / 96.0);
+
     static void OpenExternal(string uri)
     {
         if (!uri.StartsWith("http", StringComparison.OrdinalIgnoreCase)) return;
@@ -149,7 +161,7 @@ sealed class MeridianForm : Form
     protected override void OnResize(EventArgs e)
     {
         base.OnResize(e);
-        Region = new Region(Rounded(new Rectangle(0, 0, Width, Height), 12));
+        Region = new Region(Rounded(new Rectangle(0, 0, Width, Height), Dpi(12)));
     }
 
     static System.Drawing.Drawing2D.GraphicsPath Rounded(Rectangle r, int radius)

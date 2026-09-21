@@ -111,8 +111,9 @@ desktop/windows/        C# + WebView2 wrapper
 desktop/linux/          Python + GTK/WebKitGTK wrapper
 ```
 
-All three wrappers speak the same four messages to the page — `close`,
-`minimize`, `drag`, `pin` — so `index.html` carries no per-platform branches.
+All three wrappers answer the same four messages from the page — `close`,
+`minimize`, `drag`, `pin` — plus `fit` on Windows, which sizes the window to the
+card because its frame cannot be transparent.
 
 Time is computed with `Intl.DateTimeFormat` over IANA time zone identifiers, so
 daylight saving and odd offsets come from the system's own tz database rather
